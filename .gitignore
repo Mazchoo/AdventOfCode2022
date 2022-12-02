@@ -14,5 +14,6 @@
 build/*
 ExeBuild/*
 include/*
+pybind/*
 *.exe
 *.check_cache
