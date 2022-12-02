@@ -1,0 +1,50 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Clang",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${fileDirname}/ExeBuild/${fileBasenameNoExtension}.exe",
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "C/C++: clang.exe build active file"
+        },
+        {
+            "name": "Python",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceRoot}",
+            "env": {
+                "PYTHONPATH": "${workspaceRoot}"
+            }
+        },
+        {
+            "name": "LLDB Python",
+            "type": "lldb",
+            "request": "launch",
+            "program": "python",
+            "args": [
+                "${file}"
+            ],
+            "cwd": "${workspaceRoot}",
+            "stopOnEntry": false,
+            "env": {
+                "PYTHONPATH": "${workspaceRoot}"
+            },
+            "preLaunchTask": "C/C++: cmake build debug pybind"
+        },
+        {
+            "name": "LLDB process",
+            "type": "lldb",
+            "request": "attach",
+            "pid": "${command:pickMyProcess}"
+        }
+    ]
+}
