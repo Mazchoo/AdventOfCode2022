@@ -6,7 +6,7 @@
 #include <list>
 #include <vector>
 
-#include "CppModules/Helpers/Numpy.h"
+#include "Helpers/NumpyUtils.h"
 
 namespace py = pybind11;
 

@@ -5,15 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Clang",
-            "type": "lldb",
-            "request": "launch",
-            "program": "${fileDirname}/ExeBuild/${fileBasenameNoExtension}.exe",
-            "args": [],
-            "cwd": "${workspaceRoot}",
-            "preLaunchTask": "C/C++: clang.exe build active file"
-        },
-        {
             "name": "Python",
             "type": "python",
             "request": "launch",
@@ -45,6 +36,15 @@
             "type": "lldb",
             "request": "attach",
             "pid": "${command:pickMyProcess}"
+        },
+        {
+            "name": "Clang",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${fileDirname}/build/ExeDebugBuild/${fileBasenameNoExtension}.exe",
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "C/C++: clang.exe build active file"
         }
     ]
 }

@@ -1,8 +1,21 @@
 #pragma once
 #define MAX_PATH          260
+#define BUILD_FOLDER      "build\\ExeDebugBuild\\"
 
 #include <windows.h>
 #include <string>
+
+const std::string buildFolder = BUILD_FOLDER;
+
+void removeBuildDirFromRoot(std::string& str) {
+    size_t outputStrLen = str.length();
+    if (outputStrLen > buildFolder.length()) {
+        std::string endString = str.substr(outputStrLen - buildFolder.length(), outputStrLen);
+        if (endString == BUILD_FOLDER) {
+            str = str.substr(0, outputStrLen - buildFolder.length());
+        }
+    }
+}
 
 std::string RootFolder() {
     TCHAR buffer[MAX_PATH] = { 0 };
@@ -14,23 +27,9 @@ std::string RootFolder() {
         if (chr == '/' or chr == '\\')
             offset = i;
     }
-
     std::string output_string(buffer, buffer + offset);
 
-    size_t endString = 0;
-    bool finished = false;
-    for (size_t i = output_string.size(); i > 0; --i)
-    {
-        if (output_string[i] == '\\')
-        {
-            if (endString != 0)
-                finished = true;
-            endString = i;
-        }
-        if (finished)
-            break;
-    }
-    output_string = output_string.substr(0, endString);
+    removeBuildDirFromRoot(output_string);
 
     return output_string;
 }

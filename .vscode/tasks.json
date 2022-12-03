@@ -7,6 +7,8 @@
             "command": "clang++",
             "args": [
                 "-g",
+                "-O0",
+                "-fstandalone-debug",
                 "${file}",
                 "-I",
                 "${workspaceFolder}/include",
@@ -19,7 +21,7 @@
                 "-L",
                 "${env:ANACONDA_PATH}/libs",
                 "-o",
-                "${fileDirname}/ExeBuild/${fileBasenameNoExtension}.exe",
+                "${fileDirname}/build/ExeDebugBuild/${fileBasenameNoExtension}.exe",
                 "--debug"
             ],
             "options": {
