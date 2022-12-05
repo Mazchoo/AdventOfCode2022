@@ -34,12 +34,10 @@ rota rotaConstruct(std::smatch match) {
     return rota{ range1, range2 };
 };
 
-const std::regex regexExp("([0-9]+)-([0-9]+),([0-9]+)-([0-9]+)");
-
 
 struct CleaningRotas {
     CleaningRotas(std::string fileName) : mFileName(fileName) {
-        mFileParsed = parseFileLines<rota>(rotaConstruct, fileName, regexExp, mRotas);
+        mFileParsed = parseFileLines<rota>(rotaConstruct, fileName, mRegexExp, mRotas, 0);
     }
 
     bool getFileParsed() {
@@ -73,12 +71,15 @@ struct CleaningRotas {
     std::vector<rota> mRotas;
     std::string mFileName;
     bool mFileParsed = false;
+    static const std::regex mRegexExp;
 };
+const std::regex CleaningRotas::mRegexExp = std::regex("([0-9]+)-([0-9]+),([0-9]+)-([0-9]+)");
+
 
 void init_day04(py::module& m) {
     py::class_<CleaningRotas>(m, "CleaningRotas")
         .def(py::init<std::string>())
-        .def("__bool__", &CleaningRotas::getFileParsed)
+        .def("__bool__", &CleaningRotas::getFileParsed, py::return_value_policy::copy)
         .def("__iter__", [](CleaningRotas &self) {
             return py::make_iterator(self.mRotas.begin(), self.mRotas.end());
         })

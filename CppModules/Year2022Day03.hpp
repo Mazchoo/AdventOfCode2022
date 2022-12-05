@@ -125,7 +125,7 @@ class RucksackContents {
 void init_day03(py::module &m) {
      py::class_<RucksackContents>(m, "RucksackContents")
           .def(py::init<std::string>())
-          .def("__bool__", &RucksackContents::getFileParsed, py::return_value_policy::move)
+          .def("__bool__", &RucksackContents::getFileParsed, py::return_value_policy::copy)
           .def_property_readonly("get_rucksacks", &RucksackContents::getRuckSacks)
           .def("find_shared_characters", &RucksackContents::getSharedCharacters)
           .def("calculate_total_error", &RucksackContents::getTotalError)

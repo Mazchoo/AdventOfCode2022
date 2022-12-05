@@ -36,7 +36,7 @@ std::string RootFolder() {
 
 
 template <typename T> bool parseFileLines(const std::function<T(std::smatch)>& constructor, std::string& fileName,
-                                          const std::regex& regexExp, std::vector<T>& outputVec)
+                                          const std::regex& regexExp, std::vector<T>& outputVec, const int verbosity)
 {
     std::fstream file;
     file.open(fileName, std::ios::in);
@@ -45,13 +45,14 @@ template <typename T> bool parseFileLines(const std::function<T(std::smatch)>& c
         std::list<T> objList;
 
         while (getline(file, line)) {
-            if (!std::regex_match(line, regexExp)) {
-                std::cout << "String does not conform to expected regex : " << line << std::endl;
-            }
-            else {
+            if (std::regex_match(line, regexExp)) {
                 std::smatch match;
                 std::regex_search(line, match, regexExp);
                 objList.emplace_back(constructor(match));
+            }
+            else {
+                if (verbosity > 0)
+                    std::cout << "String does not conform to expected regex : " << line << std::endl;
             }
         }
 
