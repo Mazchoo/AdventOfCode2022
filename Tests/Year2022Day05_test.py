@@ -3,10 +3,10 @@ import build.Debug.AdventModule as m
 
 def test_MovingStacks__given_invalidPath__evaluates_toFalse():
     # Act
-    rotas = m.MovingStacks('')
+    stacks = m.MovingStacks('')
 
     # Assert
-    assert(not rotas)
+    assert(not stacks)
 
 
 def test_MovingStacks__given_validPath__has_expectedContents():
