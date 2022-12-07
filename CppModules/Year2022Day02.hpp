@@ -53,7 +53,7 @@ class RockPaperScissorGames {
         int totalRealScore() {
             int32_t totalScore = 0;
             for (auto& outcome : mOutcomes)
-                totalScore += SCORES[outcome - 1];
+                totalScore += SCORES[(size_t)outcome - 1];
             return totalScore;
         }
 

@@ -62,3 +62,19 @@ template <typename T> bool parseFileLines(const std::function<T(std::smatch)>& c
     }
     return false;
 }
+
+
+std::string initLine(std::smatch match) {
+    bool firstLine = true;
+    std::string output;
+
+    for (const auto& x : match) {
+        if (firstLine) {
+            firstLine = false;
+        }
+        else {
+            output = x;
+        }
+    }
+    return output;
+};

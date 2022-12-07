@@ -5,6 +5,7 @@
 #include "Year2022Day04.hpp"
 #include "Year2022Day05.hpp"
 #include "Year2022Day06.hpp"
+#include "Year2022Day07.hpp"
 #include "Helpers/FileReading.h"
 #include <pybind11/pybind11.h>
 #include <iostream>
@@ -21,15 +22,17 @@ PYBIND11_MODULE(AdventModule, m) {
      init_day04(m);
      init_day05(m);
      init_day06(m);
+     init_day07(m);
 }
 
 int main() {
      std::cout << "Starting Program" << std::endl;
      std::cout << RootFolder() << std::endl;
-     std::string inputFile = RootFolder() + "data/2022Day06/small_input.txt";
+     std::string inputFile = RootFolder() + "data/2022Day07/small_input.txt";
 
-     auto packet = SignalPacket(inputFile);
-     auto distinctChars = packet.getEndOfFirstFourDistinctChars();
+     [[maybe_unused]] auto commands = FileCommands(inputFile);
+     [[maybe_unused]] auto solution1 = commands.getTotalOfAllDirectoriesBelowThreshold(100000);
+     [[maybe_unused]] auto solution2 = commands.getDirectorySuitableForDeletion(8381165);
 
      std::cin.get();
      return 0;

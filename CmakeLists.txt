@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.4)
 
-project(pybind_example)
+project(pybind)
 add_subdirectory(pybind11)
 include_directories(CppModules)
 include_directories(include)

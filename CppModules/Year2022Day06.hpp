@@ -10,25 +10,10 @@
 
 namespace py = pybind11;
 
-std::string initSingalPacket(std::smatch match) {
-    bool firstLine = true;
-    std::string output;
-
-    for (const auto& x : match) {
-        if (firstLine) {
-            firstLine = false;
-        }
-        else {
-            output = x;
-        }
-    }
-    return output;
-};
-
 
 struct SignalPacket {
     SignalPacket(std::string fileName) : mFileName(fileName) {
-        mFileParsed = parseFileLines<std::string>(initSingalPacket, fileName, mRegexExp, mPackets, 0);
+        mFileParsed = parseFileLines<std::string>(initLine, fileName, mRegexExp, mPackets, 0);
     }
 
     bool getFileParsed() {
@@ -54,9 +39,9 @@ struct SignalPacket {
                 }
 
                 for (int j = 0; j < nrChars - 1; ++j) {
-                    currentArray[j] = currentArray[j + 1];
+                    currentArray[j] = currentArray[(size_t)j + 1];
                 }
-                currentArray[nrChars - 1] = packet[charPosition];
+                currentArray[(size_t)nrChars - 1] = packet[charPosition];
             }
             i++;
         }
@@ -89,7 +74,7 @@ struct SignalPacket {
                 }
 
                 for (int j = 0; j < 3; ++j) {
-                    currentArray[j] = currentArray[j + 1];
+                    currentArray[j] = currentArray[(size_t)j + 1];
                 }
                 currentArray[3] = packet[charPosition];
             }
