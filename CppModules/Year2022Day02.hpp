@@ -70,7 +70,7 @@ class RockPaperScissorGames {
 // C++ manages the life time of GAME_OUTCOMES and SCORES
 void init_day02(py::module &m) {
      py::class_<RockPaperScissorGames>(m, "RockPaperScissorGames")
-          .def(py::init<std::string>())
+          .def(py::init<std::string&>())
           .def("total_score", &RockPaperScissorGames::totalScore)
           .def("total_real_score", &RockPaperScissorGames::totalRealScore)
           .def("get_map", []() {return GAME_OUTCOMES;}, py::return_value_policy::reference)

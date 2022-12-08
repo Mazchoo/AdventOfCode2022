@@ -37,7 +37,7 @@ class CalorieCollection {
 
           py::array totals() {
                py::array arr = py::array_t<int>(mCalories.size());
-               auto ptr = getPointerToNumpData<int>(arr);
+               auto ptr = getPointerToNumpyData<int>(arr);
 
                int i = 0;
                for (auto& vec : mCalories) {
@@ -58,7 +58,7 @@ class CalorieCollection {
 
 void init_day01(py::module &m) {
      py::class_<CalorieCollection>(m, "CalorieCollection")
-          .def(py::init<std::string>())
+          .def(py::init<std::string&>())
           .def_property_readonly("totals", [](CalorieCollection &self) {
                return self.totals();
           })

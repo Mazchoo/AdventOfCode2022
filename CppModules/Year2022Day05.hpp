@@ -87,8 +87,8 @@ const std::regex MovingStacks::mRegexExp = std::regex("move ([0-9]+) from ([1-9]
 
 void init_day05(py::module& m) {
     py::class_<MovingStacks>(m, "MovingStacks")
-        .def(py::init<std::string>())
-        .def("__bool__", &MovingStacks::getFileParsed, py::return_value_policy::copy)
+        .def(py::init<std::string&>())
+        .def("__bool__", &MovingStacks::getFileParsed)
         .def("__iter__", [](MovingStacks&self) {
             return py::make_iterator(self.mMoves.begin(), self.mMoves.end());
         })

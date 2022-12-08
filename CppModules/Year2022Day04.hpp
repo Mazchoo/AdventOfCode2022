@@ -77,8 +77,8 @@ const std::regex CleaningRotas::mRegexExp = std::regex("([0-9]+)-([0-9]+),([0-9]
 
 void init_day04(py::module& m) {
     py::class_<CleaningRotas>(m, "CleaningRotas")
-        .def(py::init<std::string>())
-        .def("__bool__", &CleaningRotas::getFileParsed, py::return_value_policy::copy)
+        .def(py::init<std::string&>())
+        .def("__bool__", &CleaningRotas::getFileParsed)
         .def("__iter__", [](CleaningRotas &self) {
             return py::make_iterator(self.mRotas.begin(), self.mRotas.end());
         })

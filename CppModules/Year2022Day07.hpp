@@ -198,8 +198,8 @@ const std::regex FileCommands::mFileRegex = std::regex("([0-9]+)\\s([a-z\\.]+)")
 
 void init_day07(py::module& m) {
     py::class_<FileCommands>(m, "FileCommands")
-        .def(py::init<std::string>())
-        .def("__bool__", &FileCommands::getFileParsed, py::return_value_policy::copy)
+        .def(py::init<std::string&>())
+        .def("__bool__", &FileCommands::getFileParsed)
         .def("__iter__", [](FileCommands&self) {
             return py::make_iterator(self.mCommands.begin(), self.mCommands.end());
         })

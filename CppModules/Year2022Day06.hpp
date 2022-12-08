@@ -104,8 +104,8 @@ const std::regex SignalPacket::mRegexExp = std::regex("(.+)");
 
 void init_day06(py::module& m) {
     py::class_<SignalPacket>(m, "SignalPacket")
-        .def(py::init<std::string>())
-        .def("__bool__", &SignalPacket::getFileParsed, py::return_value_policy::copy)
+        .def(py::init<std::string&>())
+        .def("__bool__", &SignalPacket::getFileParsed)
         .def("__iter__", [](SignalPacket&self) {
             return py::make_iterator(self.mPackets.begin(), self.mPackets.end());
         })
