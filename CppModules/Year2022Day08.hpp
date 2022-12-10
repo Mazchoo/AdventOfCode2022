@@ -37,10 +37,13 @@ struct TreeMap {
 
         mFileParsed = parseFileLines<std::vector<uint8_t>>(initTreeLine, fileName, std::regex(charRegex), mTreeImage, 0);
         if (mFileParsed) {
-            mMaxTop = getMaxTop();
+            mMaxTop   = getMaxTop();
             mMaxRight = getMaxRight();
-            mMaxLeft = getMaxLeft();
-            mMaxDown = getMaxDown();
+            mMaxLeft  = getMaxLeft();
+            mMaxDown  = getMaxDown();
+        }
+        else {
+            mPitch = 0;
         }
     }
 
@@ -76,27 +79,27 @@ struct TreeMap {
         return arr;
     }
 
-    py::array copyArrayToNumpy(std::vector<uint8_t> sourceVector) {
+    py::array moveArrayToNumpy(std::vector<uint8_t> sourceVector) {
         py::array arr = py::array_t<uint8_t>({ mTreeImage.size(), mPitch });
         auto ptr = getPointerToNumpyData<uint8_t>(arr);
-        std::copy(sourceVector.begin(), sourceVector.end(), ptr);
+        std::move(sourceVector.begin(), sourceVector.end(), ptr);
         return arr;
     }
 
     py::array showUpMax() {
-        return copyArrayToNumpy(mMaxTop);
+        return moveArrayToNumpy(mMaxTop);
     }
 
     py::array showDownMax() {
-        return copyArrayToNumpy(mMaxDown);
+        return moveArrayToNumpy(mMaxDown);
     }
 
     py::array showRightMax() {
-        return copyArrayToNumpy(mMaxRight);
+        return moveArrayToNumpy(mMaxRight);
     }
 
     py::array showLeftMax() {
-        return copyArrayToNumpy(mMaxLeft);
+        return moveArrayToNumpy(mMaxLeft);
     }
 
     std::vector<uint8_t> getMaxTop() {
@@ -262,7 +265,6 @@ struct TreeMap {
 
         return arr;
     }
-
 
     std::vector<std::vector<uint8_t>> mTreeImage;
     std::string mFileName;

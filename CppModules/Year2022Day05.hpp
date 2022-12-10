@@ -9,16 +9,16 @@
 
 #include "Helpers/FileReading.h"
 
-typedef std::vector<std::deque<char>> stack;
+typedef std::vector<std::deque<char>> createStack;
 typedef std::list<std::list<char>> pyStack;
-typedef std::array<int, 3> move;
+typedef std::array<int, 3> stackMove;
 
 namespace py = pybind11;
 
 
-move initMoveConstruct(std::smatch match) {
+stackMove initMoveConstruct(std::smatch match) {
     int i = -1;
-    move newMove{};
+    stackMove newMove{};
 
     for (const auto& x : match) {
         if (i != -1) {
@@ -33,14 +33,14 @@ move initMoveConstruct(std::smatch match) {
 
 struct MovingStacks {
     MovingStacks(std::string fileName) : mFileName(fileName) {
-        mFileParsed = parseFileLines<move>(initMoveConstruct, fileName, mRegexExp, mMoves, 0);
+        mFileParsed = parseFileLines<stackMove>(initMoveConstruct, fileName, mRegexExp, mMoves, 0);
     }
 
     bool getFileParsed() {
         return mFileParsed;
     }
 
-    stack getStack() {
+    createStack getStack() {
         return mStack;
     }
 
@@ -56,7 +56,7 @@ struct MovingStacks {
         }
     }
 
-    stack doAllMoves() {
+    createStack doAllMoves() {
         for (auto& move : mMoves) {
             auto& sourceStack = mStack[move[1]];
             auto& desintationStack = mStack[move[2]];
@@ -66,7 +66,7 @@ struct MovingStacks {
         return mStack;
     }
 
-    stack doAllMovesKeepOrder() {
+    createStack doAllMovesKeepOrder() {
         for (auto& move : mMoves) {
             auto& sourceStack = mStack[move[1]];
             auto& desintationStack = mStack[move[2]];
@@ -76,8 +76,8 @@ struct MovingStacks {
         return mStack;
     }
 
-    stack mStack;
-    std::vector<move> mMoves;
+    createStack mStack;
+    std::vector<stackMove> mMoves;
     std::string mFileName;
     bool mFileParsed = false;
     static const std::regex mRegexExp;

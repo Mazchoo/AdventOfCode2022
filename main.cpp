@@ -7,6 +7,7 @@
 #include "Year2022Day06.hpp"
 #include "Year2022Day07.hpp"
 #include "Year2022Day08.hpp"
+#include "Year2022Day09.hpp"
 #include "Helpers/FileReading.h"
 #include <pybind11/pybind11.h>
 #include <iostream>
@@ -25,15 +26,17 @@ PYBIND11_MODULE(AdventModule, m) {
      init_day06(m);
      init_day07(m);
      init_day08(m);
+     init_day09(m);
 }
 
 int main() {
      std::cout << "Starting Program" << std::endl;
      std::cout << RootFolder() << std::endl;
-     std::string inputFile = RootFolder() + "data/2022Day08/small_input.txt";
+     std::string inputFile = RootFolder() + "data/2022Day09/small_input.txt";
 
-     [[maybe_unused]] auto treeMap = TreeMap(inputFile);
-     [[maybe_unused]] auto visibility = treeMap.getScenicScoreImage();
+     [[maybe_unused]] auto ropeBridge = RopeBridge(inputFile, 2);
+     [[maybe_unused]] auto nrTailSpots = ropeBridge.doAllMoves();
+     [[maybe_unused]] auto minMax = ropeBridge.getMinMaxCordinateTail();
 
      std::cin.get();
      return 0;
