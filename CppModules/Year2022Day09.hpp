@@ -99,19 +99,17 @@ struct RopeBridge {
         if (!mTailVisits.empty())
             return mTailVisits.size();
 
-        for (auto& move : mBridgeMoves) {
+        for (auto& move : mBridgeMoves)
             doMove(move);
-        }
 
         return mTailVisits.size();
     }
 
-    // Repeated functions below could have a implementation with iterator
-    std::pair<point2D, point2D> getMinMaxCordinateTail() {
+    std::pair<point2D, point2D> getMinMaxCordinates(std::vector<point2D> &vec) {
         point2D minCoord = { 0, 0 };
         point2D maxCoord = { 0, 0 };
 
-        for (auto& coord : mTailVisits) {
+        for (auto& coord : vec) {
             minCoord[0] = std::min<int>(minCoord[0], coord[0]);
             minCoord[1] = std::min<int>(minCoord[1], coord[1]);
             maxCoord[0] = std::max<int>(maxCoord[0], coord[0]);
@@ -121,25 +119,7 @@ struct RopeBridge {
         return std::make_pair(minCoord, maxCoord);
     }
 
-
-    std::pair<point2D, point2D> getMinMaxCordinateChain() {
-        // Can do this with template
-        point2D minCoord = { 0, 0 };
-        point2D maxCoord = { 0, 0 };
-
-        for (auto& coord : mRopeChain) {
-            minCoord[0] = std::min<int>(minCoord[0], coord[0]);
-            minCoord[1] = std::min<int>(minCoord[1], coord[1]);
-            maxCoord[0] = std::max<int>(maxCoord[0], coord[0]);
-            maxCoord[1] = std::max<int>(maxCoord[1], coord[1]);
-        }
-
-        return std::make_pair(minCoord, maxCoord);
-    }
-
-
-    py::array showTailVisits() {
-        std::pair<point2D, point2D> minMaxCoord = getMinMaxCordinateTail();
+    py::array convertChainIntoImage(std::pair<point2D, point2D>& minMaxCoord, std::vector<point2D>& chain) {
         size_t height = (size_t)minMaxCoord.second[0] - minMaxCoord.first[0] + 1;
         size_t width = (size_t)minMaxCoord.second[1] - minMaxCoord.first[1] + 1;
         size_t image_size = height * width;
@@ -151,35 +131,23 @@ struct RopeBridge {
             ptr[i] = false;
 
         // by convention image has inverted y
-        for (auto& visit : mTailVisits) {
+        for (auto& visit : chain) {
             int visit_height = visit[0] - minMaxCoord.first[0] + 1;
             int visit_width = visit[1] - minMaxCoord.first[1];
             ptr[image_size - visit_height * width + visit_width] = true;
         }
-
         return arr;
     }
 
+    py::array showTailVisits() {
+        auto setVector = std::vector<point2D>(mTailVisits.begin(), mTailVisits.end());
+        std::pair<point2D, point2D> minMaxCoord = getMinMaxCordinates(setVector);
+        return convertChainIntoImage(minMaxCoord, setVector);
+    }
+
     py::array showChain() {
-        std::pair<point2D, point2D> minMaxCoord = getMinMaxCordinateChain();
-        size_t height = (size_t)minMaxCoord.second[0] - minMaxCoord.first[0] + 1;
-        size_t width = (size_t)minMaxCoord.second[1] - minMaxCoord.first[1] + 1;
-        size_t image_size = height * width;
-
-        py::array arr = py::array_t<bool>({ height, width });
-        auto ptr = getPointerToNumpyData<bool>(arr);
-
-        for (size_t i = 0; i < image_size; ++i)
-            ptr[i] = false;
-
-        // by convention image has inverted y
-        for (auto& coord : mRopeChain) {
-            int ptr_height = coord[0] - minMaxCoord.first[0] + 1;
-            int ptr_width = coord[1] - minMaxCoord.first[1];
-            ptr[image_size - ptr_height * width + ptr_width] = true;
-        }
-
-        return arr;
+        std::pair<point2D, point2D> minMaxCoord = getMinMaxCordinates(mRopeChain);
+        return convertChainIntoImage(minMaxCoord, mRopeChain);
     }
 
     std::vector<bridgeMove> mBridgeMoves;
