@@ -27,22 +27,6 @@ def test_CathodeRayTube__given_validPath__has_expectedContents():
         assert(move == expected_output[i])
 
 
-def test_CathodeRayTube__given_validPath__has_expectedContents():
-    # Arrange
-    expected_output = [
-        ('addx', 5),
-        ('noop', 0)
-    ]
-
-    # Act
-    crt = m.CathodeRayTube('data/2022Day10/tiny_input.txt')
-
-    # Assert
-    assert(crt)
-    for i, move in enumerate(crt):
-        assert(move == expected_output[i])
-
-
 def test_CathodeRayTube_signal_sum__given_smallInput__returns_expectedValue():
     # Arrange
     crt = m.CathodeRayTube('data/2022Day10/small_input.txt')

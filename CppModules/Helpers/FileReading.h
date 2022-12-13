@@ -78,3 +78,39 @@ std::string initLine(std::smatch match) {
     }
     return output;
 };
+
+
+std::list<std::string> splitByWord(std::string text, std::string split_word) {
+    std::list<std::string> list;
+    std::string word = "";
+    int is_word_over = 0;
+
+    for (int i = 0; i <= text.length(); i++) {
+        if (i <= text.length() - split_word.length()) {
+            if (text.substr(i, split_word.length()) == split_word) {
+                list.insert(list.end(), word);
+                word = "";
+                is_word_over = 1;
+            }
+            //now we want that it jumps the rest of the split character
+            else if (is_word_over >= 1) {
+                if (is_word_over != split_word.length()) {
+                    is_word_over += 1;
+                    continue;
+                }
+                else {
+                    word += text[i];
+                    is_word_over = 0;
+                }
+            }
+            else {
+                word += text[i];
+            }
+        }
+        else {
+            word += text[i];
+        }
+    }
+    list.insert(list.end(), word);
+    return list;
+}
