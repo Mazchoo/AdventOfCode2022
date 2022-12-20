@@ -41,7 +41,8 @@ int main() {
      std::string inputFile = RootFolder() + "data/2022Day12/puzzle_input.txt";
 
      [[maybe_unused]] auto hills = HillClimbing(inputFile);
-     [[maybe_unused]] auto maxLen = hills.solveGrid();
+     [[maybe_unused]] auto pathLen = hills.solveGrid();
+     [[maybe_unused]] auto shortestPathLen = hills.solveAllStartingPositions();
 
      std::cin.get();
      return 0;

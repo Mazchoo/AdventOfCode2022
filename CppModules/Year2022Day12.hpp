@@ -10,6 +10,7 @@
 
 #include "Helpers/FileReading.h"
 #include "Helpers/NumpyUtils.h"
+#include "Helpers/DataStructures.h"
 
 namespace py = pybind11;
 
@@ -36,8 +37,15 @@ struct HillClimbing {
         mFileParsed = mFileParsed && checkAllLinesSameLength(imageLines);
         if (mFileParsed) {
             mHillMap = fillHillMap(imageLines);
-            mDistances = std::vector<int32_t>(mHeight * mWidth, -1);
             mEndInd = getEndInd();
+
+            // A square is the largest possible similtaneous discovery
+            mBuffer1.preallocate(4 * std::min<size_t>(mHeight, mWidth));
+            mBuffer2.preallocate(4 * std::min<size_t>(mHeight, mWidth));
+            mStorageBuffer = &mBuffer1;
+            mGetBuffer = &mBuffer2;
+
+            setUpImage();
         }
     }
 
@@ -114,61 +122,73 @@ struct HillClimbing {
         int j = i - 1;
         if (i % mWidth != 0 && mDistances[j] < 0 && threshold > mHillMap[j]) {
             mDistances[j] = maxDistance;
+            mStorageBuffer->append(j);
             foundAnswer = foundAnswer || (j == mEndInd);
         }
         j = i - mWidth;
         if (j > -1 && mDistances[j] < 0 && threshold > mHillMap[j]) {
             mDistances[j] = maxDistance;
+            mStorageBuffer->append(j);
             foundAnswer = foundAnswer || (j == mEndInd);
         }
         j = i + 1;
         if (j % mWidth != 0 && mDistances[j] < 0 && threshold > mHillMap[j]) {
             mDistances[j] = maxDistance;
+            mStorageBuffer->append(j);
             foundAnswer = foundAnswer || (j == mEndInd);
         }
         j = i + mWidth;
         if (j < imageSize && mDistances[j] < 0 && threshold > mHillMap[j]) {
             mDistances[j] = maxDistance;
+            mStorageBuffer->append(j);
             foundAnswer = foundAnswer || (j == mEndInd);
         }
 
         return foundAnswer;
     }
 
-    void updateStartAndEndInds(int& startInd, int& endInd, size_t imageSize) {
-        if (startInd > mWidth)
-            startInd -= mWidth;
-        else
-            startInd = 0;
+    void resetBuffers(size_t ind) {
+        mSolved = false;
+        mMaxDistance = 0;
 
-        if (endInd < imageSize - mWidth)
-            endInd += mWidth;
-        else
-            endInd = imageSize;
+        mStorageBuffer->reset();
+        mGetBuffer->reset();
+        mStorageBuffer->append(ind);
+
+        mDistances = std::vector<int32_t>(mHeight * mWidth, -1);
+        mDistances[ind] = 0;
     }
 
     void setUpImage() {
-        mMaxDistance = 0;
         size_t startInd = getStartInd();
 
-        mDistances[startInd] = 0;
         mHillMap[startInd] = 97;
         mHillMap[mEndInd] = 122;
+
+        resetBuffers(startInd);
+    }
+
+    void swapBuffers() {
+        BufferedList<int>* copyBuffer = mStorageBuffer;
+        mStorageBuffer = mGetBuffer;
+        mGetBuffer = copyBuffer;
     }
 
     void solveIteration() {
-        for (int i = 0; i < mHeight * mWidth; ++i) {
-            if (mDistances[i] == mMaxDistance) {
-                int32_t threshold = mHillMap[i] + 2;
-                mSolved = mSolved || addPointsToNeighbour(threshold, mMaxDistance + 1, i, mHeight * mWidth);
-            }
+        swapBuffers();
+        mStorageBuffer->reset();
+        int* ptr = mGetBuffer->getPointer();
+
+        for (int i = 0; i < mGetBuffer->mLength; ++i) {
+            int k = ptr[i];
+            int32_t threshold = mHillMap[k] + 2;
+            mSolved = mSolved || addPointsToNeighbour(threshold, mMaxDistance + 1, k, mHeight * mWidth);
         }
         mMaxDistance++;
     }
 
     uint32_t solveGrid() {
         size_t imageSize = mHeight * mWidth;
-        setUpImage();
         
         while (!mSolved && mMaxDistance < imageSize) {
             solveIteration();   
@@ -176,8 +196,27 @@ struct HillClimbing {
         return mMaxDistance;
     }
 
-    std::vector<uint8_t> mHillMap;
-    std::vector<int32_t> mDistances;
+    uint32_t solveAllStartingPositions() {
+        BufferedList<int> startPositionsBuffer;
+        startPositionsBuffer.preallocate(mHeight * mWidth);
+        int i = 0;
+        for (auto& x : mHillMap) {
+            if (x == 97)
+                startPositionsBuffer.append(i);
+            i++;
+        }
+
+        uint32_t currentSolution = mWidth * mHeight;
+
+        int* ptr = startPositionsBuffer.getPointer();
+        for (i = 0; i < startPositionsBuffer.mLength; ++i) {
+            resetBuffers(ptr[i]);
+            currentSolution = std::min<uint32_t>(solveGrid(), currentSolution);
+        }
+
+        return currentSolution;
+    }
+
     size_t mHeight = 0;
     size_t mWidth = 0;
     int32_t mMaxDistance = 0;
@@ -186,6 +225,13 @@ struct HillClimbing {
     bool mFileParsed = false;
     bool mSolved = false;
     static const std::regex mLineRegex;
+
+    BufferedList<int> mBuffer1;
+    BufferedList<int> mBuffer2;
+    BufferedList<int>* mStorageBuffer;
+    BufferedList<int>* mGetBuffer;
+    std::vector<uint8_t> mHillMap;
+    std::vector<int32_t> mDistances;
 };
 const std::regex HillClimbing::mLineRegex = std::regex("(.*)");
 
@@ -199,5 +245,7 @@ void init_day12(py::module& m) {
         .def("path_length", &HillClimbing::solveGrid)
         .def("setup_distances", &HillClimbing::setUpImage)
         .def("do_path_iter", &HillClimbing::solveIteration)
+        .def("reset_grid", &HillClimbing::resetBuffers)
+        .def("shortest_path_length", &HillClimbing::solveAllStartingPositions)
         ;
 }

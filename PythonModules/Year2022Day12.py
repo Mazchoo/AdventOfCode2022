@@ -11,3 +11,5 @@ plt.show()
 print(hill_map.path_length())
 plt.imshow(hill_map.distances, cmap='seismic')
 plt.show()
+
+print(hill_map.shortest_path_length())

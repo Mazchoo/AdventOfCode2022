@@ -14,9 +14,9 @@ def test_HillClimbing__given_invalidPath__evaluates_toFalse():
 def test_HillClimbing__given_validInput__has_expectedHillImage():
     # Arrange
     expected_output = [
-        "Sabqponm",
+        "aabqponm",
         "abcryxxl",
-        "accszExk",
+        "accszzxk",
         "acctuvwj",
         "abdefghi"
     ]
@@ -35,6 +35,14 @@ def test_HillClimbing_path_length__given_validInput__returns_expectedPathLength(
 
     # Assert
     assert(hill_climbing.path_length() == 31)
+
+
+def test_HillClimbing_shortest_path_length__given_validInput__returns_expectedPathLength():
+    # Act
+    hill_climbing = m.HillClimbing('data/2022Day12/small_input.txt')
+
+    # Assert
+    assert(hill_climbing.shortest_path_length() == 29)
 
 
 if __name__ == '__main__':
