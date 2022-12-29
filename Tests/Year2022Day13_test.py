@@ -12,11 +12,11 @@ def test_DistressSignalParser__given_invalidPath__evaluates_toFalse():
     assert(not distress_signals)
 
 
-def test_DistressSignalParser__given_validInput__has_listContents():
+def test_DistressSignalParser__given_tinyInput__has_listContents():
     # Arrange
     expected_output = (
         [1, [2, [3, [4, [5, 6, 7]]]], 8, 9],
-        [1, [2, [3, [4, [5, 6, 0]]]], 8, 9]
+        [1, [2, [3, [4, []]]], 8, 9]
     )
 
     # Act
@@ -26,6 +26,28 @@ def test_DistressSignalParser__given_validInput__has_listContents():
     assert(distress_signals)
     for output in distress_signals:
         assert(output == expected_output)
+
+
+def test_DistressSignalParser__given_smallInput__has_listContents():
+    # Arrange
+    expected_output = [
+        ([1,1,3,1,1], [1,1,5,1,1]),
+        ([[1],[2,3,4]], [[1],4]),
+        ([9], [[8,7,6]]),
+        ([[4,4],4,4], [[4,4],4,4,4]),
+        ([7,7,7,7], [7,7,7]),
+        ([], [3]),
+        ([[[]]], [[]]),
+        ([1,[2,[3,[4,[5,6,7]]]],8,9], [1,[2,[3,[4,[5,6,0]]]],8,9])
+    ]
+
+    # Act
+    distress_signals = m.DistressSignalParser('data/2022Day13/small_input.txt')
+
+    # Assert
+    assert(distress_signals)
+    for i, output in enumerate(distress_signals):
+        assert(output == expected_output[i])
 
 
 def test_DistressSignalParser__given_listPair1__returns_expectedOutcome():
@@ -38,6 +60,43 @@ def test_DistressSignalParser__given_listPair1__returns_expectedOutcome():
 
     # Assert
     assert(distress_signals.compare_lists(list_1, list_2))
+
+
+def test_DistressSignalParser__given_listPair2__returns_expectedOutcome():
+    # Arrange
+    list_1 = [[1], [2, 3, 4]]
+    list_2 = [[1], 4]
+
+    # Act
+    distress_signals = m.DistressSignalParser('')
+
+    # Assert
+    assert(distress_signals.compare_lists(list_1, list_2))
+
+
+def test_DistressSignalParser__given_listPair3__returns_expectedOutcome():
+    # Arrange
+    list_1 = [9]
+    list_2 = [[8, 7, 6]]
+
+    # Act
+    distress_signals = m.DistressSignalParser('')
+
+    # Assert
+    assert(~distress_signals.compare_lists(list_1, list_2))
+
+
+def test_DistressSignalParser__given_listPair4__returns_expectedOutcome():
+    # Arrange
+    list_1 = [[4, 4], 4, 4]
+    list_2 = [[4, 4], 4, 4, 4]
+
+    # Act
+    distress_signals = m.DistressSignalParser('')
+
+    # Assert
+    assert(distress_signals.compare_lists(list_1, list_2))
+
 
 if __name__ == '__main__':
     pytest.main([__file__, '-x', '--verbose'])

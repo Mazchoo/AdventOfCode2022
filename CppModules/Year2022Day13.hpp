@@ -25,7 +25,7 @@ distressSignal parseStrListIntoSignal(std::string& listString) {
         if (std::isdigit(ch)) {
             currentNode->appendLeaf((uint8_t)ch - 48);
         }
-        else if (ch == '[' && currentNode->mChildren.size() > 0) {
+        else if (ch == '[') {
             currentNode->appendBranch();
             currentNode = &(currentNode->mChildren.back());
         }
@@ -72,9 +72,9 @@ struct DistressSignalParser {
 
         for (auto& node : signal.mChildren) {
             if (node)
-                output.append(parseSignalIntoList(node));
-            else
                 output.append(node.mValue);
+            else
+                output.append(parseSignalIntoList(node));
         }
 
         return output;
@@ -90,14 +90,67 @@ struct DistressSignalParser {
         return output;
     }
 
-    bool compareLists(py::list list1, py::list list2) {
-        
-        std::string listStr1 = py::str(list1);
-        distressSignal signal1 = parseStrListIntoSignal(listStr1);
-        std::string listStr2 = py::str(list2);
-        distressSignal signal2 = parseStrListIntoSignal(listStr2);
+    distressSignal parseList(py::list list) {
+        // Probably more efficient by directly indexing the list
+        std::string listStr = py::str(list);
+        listStr = listStr.substr(1, listStr.size() - 1);
+        return parseStrListIntoSignal(listStr);
+    }
 
-        return true;
+    bool signalValuesLessThan(distressSignal signal1, distressSignal signal2) {
+        return signal1 && signal2 && signal1.mValue < signal2.mValue;
+    }
+
+    bool signalValuesGreaterThan(distressSignal signal1, distressSignal signal2) {
+        return signal1 && signal2 && signal1.mValue > signal2.mValue;
+    }
+
+    bool compareDistressSignals(distressSignal signal1, distressSignal signal2, bool& output) {
+
+        if (signalValuesLessThan(signal1, signal2)) {
+            output = true;
+            return true;
+        }
+        else if (signalValuesGreaterThan(signal1, signal2)) {
+            output = false;
+            return true;
+        }
+        else if (!signal1 && signal2 && signal1.length() > 0) {
+            return compareDistressSignals(signal1[0], signal2, output);
+        }
+        else if (signal1 && !signal2 && signal2.length() > 0) {
+            return compareDistressSignals(signal1, signal2[0], output);
+        }
+        else if (!signal1 && !signal2) {
+            size_t minLength = std::min<size_t>(signal1.length(), signal2.length());
+            for (size_t i = 0; i < minLength; ++i) {
+                if (compareDistressSignals(signal1[i], signal2[i], output))
+                    break;
+            }
+        }
+
+        return false;
+    }
+
+    int getNrListsInRightOrder() {
+        int total = 0;
+        for (auto& pair : mSignals) {
+            bool correctOrder = false;
+            compareDistressSignals(pair.first, pair.second, correctOrder);
+            total += (correctOrder) ? 1 : 0;
+        }
+
+        return total;
+    }
+
+    bool compareLists(py::list list1, py::list list2) {
+        auto signal1 = parseList(list1);
+        auto signal2 = parseList(list2);
+
+        bool correctOrder = true;
+        compareDistressSignals(signal1, signal2, correctOrder);
+
+        return correctOrder;
     }
 
     bool getFileParsed() {
