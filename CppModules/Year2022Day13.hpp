@@ -20,10 +20,19 @@ typedef std::pair<distressSignal, distressSignal> distressPairs;
 distressSignal parseStrListIntoSignal(std::string& listString) {
     auto node = distressSignal();
     auto currentNode = &node;
+    char lastChar = '[';
 
     for (auto& ch : listString) {
         if (std::isdigit(ch)) {
-            currentNode->appendLeaf((uint8_t)ch - 48);
+            if (std::isdigit(lastChar)) {
+                uint8_t newValue = currentNode->mChildren.back().mValue;
+                newValue *= 10;
+                newValue += (uint8_t)ch - 48;
+                currentNode->mChildren.back().setValue(newValue);
+            }
+            else {
+                currentNode->appendLeaf((uint8_t)ch - 48);
+            } 
         }
         else if (ch == '[') {
             currentNode->appendBranch();
@@ -32,6 +41,7 @@ distressSignal parseStrListIntoSignal(std::string& listString) {
         else if (ch == ']' && currentNode->mParent != nullptr) {
             currentNode = currentNode->mParent;
         }
+        lastChar = ch;
     }
 
     return node;
@@ -115,17 +125,25 @@ struct DistressSignalParser {
             output = false;
             return true;
         }
-        else if (!signal1 && signal2 && signal1.length() > 0) {
-            return compareDistressSignals(signal1[0], signal2, output);
+        else if (!signal1 && signal2) {
+            auto newSignal = distressSignal();
+            newSignal.mChildren.emplace_back(signal2);
+            return compareDistressSignals(signal1, newSignal, output);
         }
-        else if (signal1 && !signal2 && signal2.length() > 0) {
-            return compareDistressSignals(signal1, signal2[0], output);
+        else if (signal1 && !signal2) {
+            auto newSignal = distressSignal();
+            newSignal.mChildren.emplace_back(signal1);
+            return compareDistressSignals(newSignal, signal2, output);
         }
         else if (!signal1 && !signal2) {
             size_t minLength = std::min<size_t>(signal1.length(), signal2.length());
             for (size_t i = 0; i < minLength; ++i) {
                 if (compareDistressSignals(signal1[i], signal2[i], output))
-                    break;
+                    return true;
+            }
+            if (signal1.length() != signal2.length()) {
+                output = signal1.length() == minLength;
+                return true;
             }
         }
 
@@ -134,10 +152,12 @@ struct DistressSignalParser {
 
     int getNrListsInRightOrder() {
         int total = 0;
+        int i = 0;
         for (auto& pair : mSignals) {
-            bool correctOrder = false;
+            bool correctOrder = true;
             compareDistressSignals(pair.first, pair.second, correctOrder);
-            total += (correctOrder) ? 1 : 0;
+            i++;
+            total += (correctOrder) ? i : 0;
         }
 
         return total;
@@ -174,5 +194,6 @@ void init_day13(py::module& m) {
             return self.getListSignalPair(i);
         })
         .def("compare_lists", &DistressSignalParser::compareLists)
+        .def("compare_all_input", &DistressSignalParser::getNrListsInRightOrder)
         ;
 }

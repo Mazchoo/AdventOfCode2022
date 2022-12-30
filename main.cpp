@@ -40,7 +40,7 @@ PYBIND11_MODULE(AdventModule, m) {
 int main() {
      std::cout << "Starting Program" << std::endl;
      std::cout << RootFolder() << std::endl;
-     std::string inputFile = RootFolder() + "data/2022Day13/small_input.txt";
+     std::string inputFile = RootFolder() + "data/2022Day13/tiny_input.txt";
 
      [[maybe_unused]] auto distressSignals = DistressSignalParser(inputFile);
      [[maybe_unused]] auto answer = distressSignals.getNrListsInRightOrder();
