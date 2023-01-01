@@ -152,6 +152,14 @@ def test_DistressSignalParser_compare_all_input__given_smallInput__returns_expec
 
     # Assert
     assert(distress_signals.compare_all_input() == 13)
+    
+
+def test_DistressSignalParser_get_sorted_key__given_smallInput__returns_expectedOutcome():
+    # Act
+    distress_signals = m.DistressSignalParser('data/2022Day13/small_input.txt')
+
+    # Assert
+    assert(distress_signals.get_sorted_key() == 140)
 
 
 if __name__ == '__main__':

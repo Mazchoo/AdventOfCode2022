@@ -24,11 +24,26 @@ struct BranchNode {
 	inline void setValue(T val) { mValue = val; hasValue = true; }
 	int length() { return mChildren.size();  }
 
+	static bool compareBranchNodes(BranchNode a, BranchNode b) {
+		if (a.mValue != b.mValue)
+			return false;
+		if (a.length() != b.length())
+			return false;
+		for (int i = 0; i < a.length(); ++i) {
+			if (!compareBranchNodes(a[i], b[i]))
+				return false;
+		}
+		return true;
+	}
+
 	explicit operator bool() const { return hasValue;  }
 	BranchNode& operator [] (int index) {
 		auto childrenFront = mChildren.begin();
 		std::advance(childrenFront, index);
 		return *childrenFront;
+	}
+	bool operator ==(BranchNode& other) {
+		return compareBranchNodes(*this, other);
 	}
 
 	bool hasValue = false;
