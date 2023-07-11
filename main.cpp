@@ -12,6 +12,7 @@
 #include "Year2022Day11.hpp"
 #include "Year2022Day12.hpp"
 #include "Year2022Day13.hpp"
+#include "Year2022Day14.hpp"
 #include "Helpers/FileReading.h"
 #include <pybind11/pybind11.h>
 #include <iostream>
@@ -35,15 +36,15 @@ PYBIND11_MODULE(AdventModule, m) {
      init_day11(m);
      init_day12(m);
      init_day13(m);
+     init_day14(m);
 }
 
 int main() {
      std::cout << "Starting Program" << std::endl;
      std::cout << RootFolder() << std::endl;
-     std::string inputFile = RootFolder() + "data/2022Day13/small_input.txt";
+     std::string inputFile = RootFolder() + "data/2022Day14/small_input.txt";
 
-     [[maybe_unused]] auto distressSignals = DistressSignalParser(inputFile);
-     [[maybe_unused]] auto answer = distressSignals.getSortedKeyValue();
+     [[maybe_unused]] auto fallingSand = FallingSandGame(inputFile);
 
      std::cin.get();
      return 0;

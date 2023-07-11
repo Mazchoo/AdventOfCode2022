@@ -9,7 +9,7 @@ def test_DistressSignalParser__given_invalidPath__evaluates_toFalse():
     distress_signals = m.DistressSignalParser('')
 
     # Assert
-    assert(not distress_signals)
+    assert not distress_signals
 
 
 def test_DistressSignalParser__given_tinyInput__has_listContents():
@@ -23,9 +23,9 @@ def test_DistressSignalParser__given_tinyInput__has_listContents():
     distress_signals = m.DistressSignalParser('data/2022Day13/tiny_input.txt')
 
     # Assert
-    assert(distress_signals)
+    assert distress_signals
     for output in distress_signals:
-        assert(output == expected_output)
+        assert output == expected_output
 
 
 def test_DistressSignalParser__given_smallInput__has_listContents():
@@ -152,7 +152,7 @@ def test_DistressSignalParser_compare_all_input__given_smallInput__returns_expec
 
     # Assert
     assert(distress_signals.compare_all_input() == 13)
-    
+
 
 def test_DistressSignalParser_get_sorted_key__given_smallInput__returns_expectedOutcome():
     # Act
