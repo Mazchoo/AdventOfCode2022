@@ -24,7 +24,7 @@ std::string RootFolder() {
     int i = 0;
     for (auto& chr : buffer) {
         i++;
-        if (chr == '/' or chr == '\\')
+        if ((chr == '/') || (chr == '\\'))
             offset = i;
     }
     std::string output_string(buffer, buffer + offset);

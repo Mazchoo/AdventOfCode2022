@@ -3,6 +3,13 @@ cmake_minimum_required(VERSION 3.4)
 project(pybind)
 add_subdirectory(pybind11)
 include_directories(CppModules)
-include_directories(include)
 pybind11_add_module(AdventModule main.cpp)
 
+find_package(PythonLibs REQUIRED)
+include_directories(${PYTHON_INCLUDE_DIRS} pybind11/include CppModules)
+link_directories(CppModules ${PYTHON_LIBRARIES})
+set(SOURCE "CppModules")
+
+# project for .exe build
+add_executable(CppExecutable main.cpp)
+target_link_libraries(CppExecutable ${PYTHON_LIBRARIES})
