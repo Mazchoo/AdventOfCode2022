@@ -3,40 +3,6 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "C/C++: clang.exe build active file",
-            "command": "clang++",
-            "args": [
-                "-g",
-                "-O0",
-                "-fstandalone-debug",
-                "${file}",
-                "-I",
-                "${workspaceFolder}/include",
-                "-I",
-                "${workspaceFolder}",
-                "-I",
-                "${workspaceFolder}/pybind11/include",
-                "-I",
-                "${env:ANACONDA_PATH}/include",
-                "-L",
-                "${env:ANACONDA_PATH}/libs",
-                "-o",
-                "${fileDirname}/build/ExeDebugBuild/${fileBasenameNoExtension}.exe",
-                "--debug"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
-        {
-            "type": "shell",
             "label": "C/C++: cmake build debug pybind",
             "command": "cmake",
             "args": [

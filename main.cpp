@@ -42,9 +42,10 @@ PYBIND11_MODULE(AdventModule, m) {
 int main() {
      std::cout << "Starting Program" << std::endl;
      std::cout << RootFolder() << std::endl;
-     std::string inputFile = RootFolder() + "../../data/2022Day14/tiny_input.txt";
+     std::string inputFile = RootFolder() + "../../data/2022Day14/small_input.txt";
 
-     [[maybe_unused]] auto fallingSand = FallingSandGame(inputFile);
+     [[maybe_unused]] auto fallingSand = FallingSandGame(inputFile, 500, 0);
+     fallingSand.update();
 
      std::cin.get();
      return 0;
