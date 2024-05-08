@@ -8,9 +8,11 @@ def show_state(sand: m.FallingSandGame):
     plt.show()
 
 
-falling_sand = m.FallingSandGame('data/2022Day14/small_input.txt', 500, 0)
+falling_sand = m.FallingSandGame('data/2022Day14/puzzle_input_extend.txt', 500, 0)
+falling_sand.updateUntilAtRest()
 
-show_state(falling_sand.image)
-for i in range(1, 31):
+for i in range(1, 100000):
     falling_sand.updateUntilAtRest()
-    show_state(falling_sand.image)
+    if i % 1000 == 0:
+        show_state(falling_sand.image)
+
