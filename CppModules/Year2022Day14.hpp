@@ -46,8 +46,8 @@ ledgeVector initLedgeVector(std::smatch match) {
 };
 
 
-struct FallingSandGame {
-    FallingSandGame(std::string& fileName, size_t startX, size_t startY) :
+struct ParticleFilter {
+    ParticleFilter(std::string& fileName, size_t startX, size_t startY) :
         mFileName(fileName), mStartX(startX), mStartY(startY) {
         mLedges.clear();
         mFileParsed = parseFileLines<ledgeVector>(initLedgeVector, fileName, mLineRegex, mLedges, 0);
@@ -246,17 +246,17 @@ struct FallingSandGame {
     bool mGameAtRest = true;
     bool mCanMove = true;
 };
-const std::regex FallingSandGame::mLineRegex = std::regex(".*");
+const std::regex ParticleFilter::mLineRegex = std::regex(".*");
 
 
 void init_day14(py::module& m) {
-    py::class_<FallingSandGame>(m, "FallingSandGame")
+    py::class_<ParticleFilter>(m, "FallingSandGame")
         .def(py::init<std::string&, int, int>())
-        .def("__bool__", &FallingSandGame::getFileParsed)
-        .def_property_readonly("image", &FallingSandGame::showImage)
-        .def_property_readonly("canMove", &FallingSandGame::canMove)
-        .def_property_readonly("nrSand", &FallingSandGame::nrSand)
-        .def("update", &FallingSandGame::update)
-        .def("updateUntilAtRest", &FallingSandGame::updateUntilAtRest)
+        .def("__bool__", &ParticleFilter::getFileParsed)
+        .def_property_readonly("image", &ParticleFilter::showImage)
+        .def_property_readonly("canMove", &ParticleFilter::canMove)
+        .def_property_readonly("nrSand", &ParticleFilter::nrSand)
+        .def("update", &ParticleFilter::update)
+        .def("updateUntilAtRest", &ParticleFilter::updateUntilAtRest)
         ;
 }

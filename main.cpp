@@ -13,6 +13,7 @@
 #include "Year2022Day12.hpp"
 #include "Year2022Day13.hpp"
 #include "Year2022Day14.hpp"
+#include "Year2022Day15.hpp"
 #include "Helpers/FileReading.h"
 #include <pybind11/pybind11.h>
 #include <iostream>
@@ -37,6 +38,7 @@ PYBIND11_MODULE(AdventModule, m) {
      init_day12(m);
      init_day13(m);
      init_day14(m);
+     init_day15(m);
 }
 
 int main() {
